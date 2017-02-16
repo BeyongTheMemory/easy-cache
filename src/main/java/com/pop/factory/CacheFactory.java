@@ -9,6 +9,7 @@ import com.pop.remote.redis.RedisOperateImp;
 import com.pop.remote.redis.RedisPool;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import redis.clients.jedis.JedisPool;
@@ -29,7 +30,6 @@ public class CacheFactory implements ApplicationContextAware {
     private long localMaxSize = -1;//defalut unlimited size
     private long localTTL = -1;//expire after write ,defalut no ttl
     private TimeUnit tTLUnit =  TimeUnit.SECONDS;
-
 
     private Cache createCache() {
         if(localCache == null){

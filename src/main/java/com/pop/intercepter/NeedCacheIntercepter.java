@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
@@ -36,10 +37,17 @@ public class NeedCacheIntercepter {
         Preconditions.checkArgument(!returnTypeName.equals("void"),"can't cache void method!");
         cache.setNeedRemote(needCacheAnnotion.needRemote());
         //get key
-        StringBuilder key = new StringBuilder();
-        key.append(className).append("-").append(methodName).append("-").append(serialize.toString(pjp.getArgs()));
+        String key;
+        if(StringUtils.isEmpty(needCacheAnnotion.key())){
+            key = needCacheAnnotion.key();
+        }else {
+            StringBuilder keyBuilder = new StringBuilder();
+            keyBuilder.append(className).append("-").append(methodName).append("-").append(serialize.toString(pjp.getArgs()));
+            key = keyBuilder.toString();
+        }
+
         //get object
-        Object cacheResult = cache.getStringByKey(key.toString(),signature.getReturnType());
+        Object cacheResult = cache.getStringByKey(key,signature.getReturnType());
         if(cacheResult != null){
             return cacheResult;
         }
@@ -47,7 +55,7 @@ public class NeedCacheIntercepter {
         try {
             Object methodResut = pjp.proceed();
             if(methodResut != null) {
-                cache.set(key.toString(), methodResut);
+                cache.set(key, methodResut);
             }
             return methodResut;
         } catch (Throwable throwable) {
