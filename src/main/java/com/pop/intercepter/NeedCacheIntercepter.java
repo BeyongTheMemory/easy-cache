@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.pop.annotion.NeedCache;
 import com.pop.cache.Cache;
 import com.pop.serialize.Serialize;
+import com.pop.util.KeySpELUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -38,22 +39,18 @@ public class NeedCacheIntercepter {
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         Method method = signature.getMethod();
         String methodName = method.getName();
-        NeedCache needCacheAnnotion = method.getAnnotation(NeedCache.class);
+        NeedCache needCache = method.getAnnotation(NeedCache.class);
         String returnTypeName = signature.getReturnType().getName();
         Preconditions.checkArgument(!returnTypeName.equals("void"), "can't cache void method!");
-        cache.setNeedRemote(needCacheAnnotion.needRemote());
+        cache.setNeedRemote(needCache.needRemote());
         //get key
         String key;
-        if (!StringUtils.isEmpty(needCacheAnnotion.key()) || !StringUtils.isEmpty(needCacheAnnotion.name())) {
-            EvaluationContext context = new StandardEvaluationContext();
-            String[] parameterNames = signature.getParameterNames();
-            Object[] parameterValues = pjp.getArgs();
-
-            for(int i= 0;i<parameterNames.length;i++){
-                context.setVariable(parameterNames[i],parameterValues[i]);
+        if (!StringUtils.isEmpty(needCache.key()) || !StringUtils.isEmpty(needCache.name())) {
+            if(!StringUtils.isEmpty(needCache.key()) && needCache.key().startsWith("#")) {
+                key = needCache.name() + KeySpELUtil.getKey(signature,pjp,needCache.key());
+            }else {
+                key = needCache.name() + needCache.key();
             }
-            ExpressionParser parser = new SpelExpressionParser();
-            key = needCacheAnnotion.name() + parser.parseExpression(needCacheAnnotion.key()).getValue(context,String.class);
         } else {
             StringBuilder keyBuilder = new StringBuilder();
             keyBuilder.append(className).append("-").append(methodName).append("-").append(serialize.toString(pjp.getArgs()));

@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CacheEvict {
+public @interface CacheEvict{
     boolean needRemote() default true;//whether cache in remote
 
     /**

@@ -11,7 +11,7 @@ public class Main {
         ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"spring/spring-redis.xml","spring/spring-cache.xml","spring/spring-registry.xml"});
         SimpleNeedCache simple = (SimpleNeedCache)context.getBean("simple");
         System.out.println(simple.getSimpleObject("sjjk",1).toString());
-        simple.deleteCache();
+        simple.deleteCache("sjjk");
         Thread.sleep(1000000000);
         System.out.println(simple.getSimpleObject("sklk",1).toString());
 

@@ -24,8 +24,8 @@ public class SimpleNeedCache {
         simpleObject.setStringList(ss);
         return simpleObject;
     }
-    @CacheEvict(key = "ss",name = "xx")
-    public void deleteCache(){
+    @CacheEvict(key = "#xa",name = "xx")
+    public void deleteCache(String xa){
         System.out.println("delete");
     }
 
