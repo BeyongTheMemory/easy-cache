@@ -8,11 +8,16 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
+import java.util.List;
 
 
 /**
@@ -40,7 +45,15 @@ public class NeedCacheIntercepter {
         //get key
         String key;
         if (!StringUtils.isEmpty(needCacheAnnotion.key()) || !StringUtils.isEmpty(needCacheAnnotion.name())) {
-            key = needCacheAnnotion.name() + needCacheAnnotion.key();
+            EvaluationContext context = new StandardEvaluationContext();
+            String[] parameterNames = signature.getParameterNames();
+            Object[] parameterValues = pjp.getArgs();
+
+            for(int i= 0;i<parameterNames.length;i++){
+                context.setVariable(parameterNames[i],parameterValues[i]);
+            }
+            ExpressionParser parser = new SpelExpressionParser();
+            key = needCacheAnnotion.name() + parser.parseExpression(needCacheAnnotion.key()).getValue(context,String.class);
         } else {
             StringBuilder keyBuilder = new StringBuilder();
             keyBuilder.append(className).append("-").append(methodName).append("-").append(serialize.toString(pjp.getArgs()));

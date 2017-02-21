@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Component
 public class SimpleNeedCache {
-    @NeedCache(key = "ss",name = "xx")
+    @NeedCache(key = "#a",name = "xx")
     public SimpleObject getSimpleObject(String a,int i){
         System.out.println("getSimpleObject");
         SimpleObject simpleObject = new SimpleObject();
