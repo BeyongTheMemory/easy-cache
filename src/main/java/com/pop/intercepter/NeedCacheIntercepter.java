@@ -25,46 +25,39 @@ public class NeedCacheIntercepter {
     Cache cache;
     @Resource
     Serialize serialize;
+
     @Around(value = "@annotation(com.pop.annotion.NeedCache)")
-    public Object cache(ProceedingJoinPoint pjp){
+    public Object cache(ProceedingJoinPoint pjp) throws Throwable {
         Object target = pjp.getTarget();
         String className = target.getClass().getName();
-        MethodSignature signature = (MethodSignature)pjp.getSignature();
+        MethodSignature signature = (MethodSignature) pjp.getSignature();
         Method method = signature.getMethod();
         String methodName = method.getName();
         NeedCache needCacheAnnotion = method.getAnnotation(NeedCache.class);
         String returnTypeName = signature.getReturnType().getName();
-        Preconditions.checkArgument(!returnTypeName.equals("void"),"can't cache void method!");
+        Preconditions.checkArgument(!returnTypeName.equals("void"), "can't cache void method!");
         cache.setNeedRemote(needCacheAnnotion.needRemote());
         //get key
         String key;
-        if(StringUtils.isEmpty(needCacheAnnotion.key())){
-            key = needCacheAnnotion.key();
-        }else {
+        if (!StringUtils.isEmpty(needCacheAnnotion.key()) || !StringUtils.isEmpty(needCacheAnnotion.name())) {
+            key = needCacheAnnotion.name() + needCacheAnnotion.key();
+        } else {
             StringBuilder keyBuilder = new StringBuilder();
             keyBuilder.append(className).append("-").append(methodName).append("-").append(serialize.toString(pjp.getArgs()));
             key = keyBuilder.toString();
         }
 
         //get object
-        Object cacheResult = cache.getStringByKey(key,signature.getReturnType());
-        if(cacheResult != null){
+        Object cacheResult = cache.getStringByKey(key, signature.getReturnType());
+        if (cacheResult != null) {
             return cacheResult;
         }
         //no cache
-        try {
-            Object methodResut = pjp.proceed();
-            if(methodResut != null) {
-                cache.set(key, methodResut);
-            }
-            return methodResut;
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
+        Object methodResut = pjp.proceed();
+        if (methodResut != null) {
+            cache.set(key, methodResut);
         }
-
-        return null;
-
-
+        return methodResut;
 
 
     }

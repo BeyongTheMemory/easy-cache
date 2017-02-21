@@ -1,6 +1,7 @@
 package com.pop.cache;
 
 import com.pop.local.LocalCache;
+import com.pop.regist.Registry;
 import com.pop.remote.RemoteCache;
 import com.pop.serialize.Serialize;
 import org.springframework.util.StringUtils;
@@ -11,11 +12,17 @@ import org.springframework.util.StringUtils;
 public class Cache {
     private RemoteCache remoteCache;
     private LocalCache localCache;
+    private Registry registry;
+
     private Serialize serialize;
     private boolean needRemote = true;
 
     public void set(String key, Object value) {
         localCache.set(key, value);
+        if(registry != null){
+            registry.create(key,serialize.toString(value));
+        }
+
         if (needRemote && remoteCache != null) {
                 remoteCache.set(key, serialize.toString(value));
         }
@@ -26,7 +33,7 @@ public class Cache {
             remoteCache.del(key);
         }
         localCache.del(key);
-        //todo:同步所有节点删除本地缓存
+        registry.del(key);
     }
 
     public <T> T getStringByKey(String key, Class<T> clazz) {
@@ -53,6 +60,10 @@ public class Cache {
 
     public void setLocalCache(LocalCache localCache) {
         this.localCache = localCache;
+    }
+
+    public void setRegistry(Registry registry) {
+        this.registry = registry;
     }
 
     public void setSerialize(Serialize serialize) {

@@ -10,12 +10,13 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NeedCache {
+public @interface CacheEvict {
     boolean needRemote() default true;//whether cache in remote
 
     /**
      * name and key will made  ceche key
      * if both is null,will use method signature to cache key
+     * the key resutl must same as NeedCache key result will the cache can be evict
      */
     String name() default "";
     String key() default "";

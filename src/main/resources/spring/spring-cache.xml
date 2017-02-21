@@ -24,6 +24,8 @@
 
     <bean id="simple" class="com.pop.test.SimpleNeedCache"/>
 
+    <bean id="localCacheConfig" class="com.pop.config.local.GuavaLocalClass"/>
+
 
 
 
