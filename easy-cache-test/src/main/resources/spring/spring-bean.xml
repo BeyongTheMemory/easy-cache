@@ -2,7 +2,6 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
         http://www.springframework.org/schema/context 
@@ -10,14 +9,31 @@
        default-lazy-init="false">
 
 
-
     <!-- scan package -->
     <context:component-scan base-package="com.pop.test"/>
 
-    <bean  class="com.pop.factory.CacheFactoryBuilder"/>
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <!-- 连接池配置 -->
+        <constructor-arg index="0" ref="jedisPoolConfig"/>
+        <!-- host -->
+        <constructor-arg index="1" value="127.0.0.1" type="java.lang.String"/>
+        <!-- port -->
+        <constructor-arg index="2" value="6379" type="int"/>
+    </bean>
 
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="60"/>
+        <property name="maxIdle" value="10"/>
+        <property name="maxWaitMillis" value="10000"/>
+        <property name="testOnBorrow" value="false"/>
+    </bean>
 
-
+    <bean class="com.pop.easycache.CacheBuilder">
+        <property name="useLocalCache" value="true"/>
+        <property name="useRemoteCache" value="true"/>
+        <property name="jedisPool" ref="jedisPool"/>
+        <property name="registryServer" value="127.0.0.1"/>
+    </bean>
 
 
 </beans>

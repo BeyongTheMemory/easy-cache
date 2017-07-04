@@ -2,17 +2,17 @@ package com.pop.easycache;
 
 import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.pop.easycache.cache.Cache;
+import com.pop.easycache.annotion.CacheFlush;
+import com.pop.easycache.annotion.NeedCache;
 import com.pop.easycache.factory.CacheFactory;
 import com.pop.easycache.factory.CacheFactoryImlp;
-import com.pop.easycache.proxy.CglibProxy;
+import com.pop.easycache.proxy.CacheCglibProxy;
 import com.pop.easycache.proxy.Proxy;
 import org.apache.zookeeper.ZooKeeper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+
 import redis.clients.jedis.JedisPool;
 
 import java.lang.reflect.Method;
@@ -115,10 +115,20 @@ public class CacheBuilder implements BeanPostProcessor,InitializingBean {
 
     private Proxy proxy;
 
+    /**
+     * 远程缓存失败指定次数后降级
+     */
+    private int errorNum =200;
+
+    /**
+     * 服务降级后的重试间隔时间
+     */
+    private int redisRetryTime = 20;
+
     public void afterPropertiesSet() throws Exception {
         cacheBeanMap = new ConcurrentHashMap<String, Object>();
         CacheFactory cacheFactory = new CacheFactoryImlp(this);
-        proxy = new CglibProxy(cacheFactory.getCache(),cacheFactory.getSerialize());
+        proxy = new CacheCglibProxy(cacheFactory.getCache(),cacheFactory.getSerialize());
     }
 
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -127,7 +137,7 @@ public class CacheBuilder implements BeanPostProcessor,InitializingBean {
 
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if(bean != null){
-            wrapIfNecessary(bean,beanName);
+           return wrapIfNecessary(bean,beanName);
         }
 
         return bean;
@@ -138,9 +148,14 @@ public class CacheBuilder implements BeanPostProcessor,InitializingBean {
         if(cacheBean != null){
             return cacheBean;
         }
+        if(bean.getClass().getAnnotation(NeedCache.class) != null){
+            Object proxyBean = proxy.getProxyObject(bean.getClass());
+            cacheBeanMap.put(beanName,proxyBean);
+            return proxyBean;
+        }
         Method[] methods = bean.getClass().getMethods();
         for (Method method:methods){
-            if(method.getAnnotation(Cacheable.class) != null || method.getAnnotation(CacheEvict.class) != null){
+            if(method.getAnnotation(NeedCache.class) != null || method.getAnnotation(CacheFlush.class) != null){
                 Object proxyBean = proxy.getProxyObject(bean.getClass());
                 cacheBeanMap.put(beanName,proxyBean);
                 return proxyBean;
@@ -300,5 +315,21 @@ public class CacheBuilder implements BeanPostProcessor,InitializingBean {
 
     public void setRegistryPath(String registryPath) {
         this.registryPath = registryPath;
+    }
+
+    public int getErrorNum() {
+        return errorNum;
+    }
+
+    public void setErrorNum(int errorNum) {
+        this.errorNum = errorNum;
+    }
+
+    public int getRedisRetryTime() {
+        return redisRetryTime;
+    }
+
+    public void setRedisRetryTime(int redisRetryTime) {
+        this.redisRetryTime = redisRetryTime;
     }
 }

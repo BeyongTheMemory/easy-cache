@@ -22,34 +22,45 @@ public class RedisCacheConfig extends AbstarctCacheConfig {
      */
     private int redisPort;
 
-    public RedisCacheConfig(long ttl, TimeUnit ttlUnit, JedisPool jedisPool, String redisUrl, int redisPort) {
+    /**
+     * 远程缓存失败指定次数后降级
+     */
+    private int errorNum;
+
+    /**
+     * 服务降级后的重试间隔时间,单位秒
+     */
+    private int redisRetryTime;
+
+    public RedisCacheConfig(long ttl, TimeUnit ttlUnit, JedisPool jedisPool, String redisUrl, int redisPort,int errorNum,int redisRetryTime) {
         super(ttl, ttlUnit);
         this.jedisPool = jedisPool;
         this.redisUrl = redisUrl;
         this.redisPort = redisPort;
+        this.errorNum = errorNum;
+        this.redisRetryTime = redisRetryTime;
     }
 
     public JedisPool getJedisPool() {
         return jedisPool;
     }
 
-    public void setJedisPool(JedisPool jedisPool) {
-        this.jedisPool = jedisPool;
-    }
 
     public String getRedisUrl() {
         return redisUrl;
     }
 
-    public void setRedisUrl(String redisUrl) {
-        this.redisUrl = redisUrl;
-    }
 
     public int getRedisPort() {
         return redisPort;
     }
 
-    public void setRedisPort(int redisPort) {
-        this.redisPort = redisPort;
+
+    public int getErrorNum() {
+        return errorNum;
+    }
+
+    public int getRedisRetryTime() {
+        return redisRetryTime;
     }
 }

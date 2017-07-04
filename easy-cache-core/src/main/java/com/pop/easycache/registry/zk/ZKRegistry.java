@@ -1,9 +1,9 @@
 package com.pop.easycache.registry.zk;
 
+import com.pop.easycache.event.CacheModifyMessage;
+import com.pop.easycache.event.EventBusHolder;
 import com.pop.easycache.registry.Registry;
-import com.pop.enums.CacheModifyType;
-import com.pop.event.CacheModifyMessage;
-import com.pop.event.EventBusHolder;
+import com.pop.easycache.enums.CacheModifyType;
 import org.apache.zookeeper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,16 +129,6 @@ public class ZKRegistry implements Registry {
                     e.printStackTrace();
                 }
             }
-//            //持续监听
-//            try {
-//                zk.getChildren(cacheMainPath,true);
-//            } catch (KeeperException e) {
-//                e.printStackTrace();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-
-
         }
     }
 

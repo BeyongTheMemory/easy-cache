@@ -1,6 +1,7 @@
-package com.pop.event;
+package com.pop.easycache.event;
 
-import com.pop.enums.CacheModifyType;
+
+import com.pop.easycache.enums.CacheModifyType;
 
 /**
  * Created by xugang on 17/2/20.

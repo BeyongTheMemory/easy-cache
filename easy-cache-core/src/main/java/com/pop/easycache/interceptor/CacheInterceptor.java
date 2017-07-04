@@ -2,8 +2,8 @@ package com.pop.easycache.interceptor;
 
 
 import com.pop.easycache.cache.Cache;
-import com.pop.easycache.interceptor.handler.CachaableHandler;
-import com.pop.easycache.interceptor.handler.CacheEvictHandler;
+import com.pop.easycache.interceptor.handler.NeedCacheHandler;
+import com.pop.easycache.interceptor.handler.CacheFlushHandler;
 import com.pop.easycache.interceptor.handler.CacheHandler;
 import com.pop.easycache.serialize.Serialize;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -32,7 +32,7 @@ public class CacheInterceptor implements MethodInterceptor {
     }
 
     private void registHandle(){
-        cacheHandler = new CachaableHandler();
-        cacheHandler.setSuccessor(new CacheEvictHandler());
+        cacheHandler = new NeedCacheHandler();
+        cacheHandler.setSuccessor(new CacheFlushHandler());
     }
 }

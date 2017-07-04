@@ -44,7 +44,7 @@ public class CacheFactoryImlp implements CacheFactory {
             RemoteCacheFactory remoteCacheFactory = null;
             Preconditions.checkArgument(!StringUtils.isEmpty(builder.getRemoteCacheType()), "error,the remoteCacheType is null");
             if (builder.getRemoteCacheType().contentEquals("redis")) {
-                remoteCacheFactory = new RedisCacheFactory(new RedisCacheConfig(builder.getTtl(), builder.getTtlUnit(), builder.getJedisPool(), builder.getRedisUrl(), builder.getRedisPort()));
+                remoteCacheFactory = new RedisCacheFactory(new RedisCacheConfig(builder.getTtl(), builder.getTtlUnit(), builder.getJedisPool(), builder.getRedisUrl(), builder.getRedisPort(),builder.getErrorNum(),builder.getRedisRetryTime()));
             }
             Preconditions.checkArgument(remoteCacheFactory != null, "can't support remoteCache type");
             return remoteCacheFactory.getRemoteCaChe();

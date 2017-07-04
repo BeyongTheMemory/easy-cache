@@ -12,9 +12,6 @@ import java.lang.reflect.Method;
 public class Main {
     public static void main(String args[]) {
         ApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"spring/spring-bean.xml"});
-        String[] beanNames = context.getBeanNamesForAnnotation(Component.class);
-        Object test = context.getBean(beanNames[0]);
-        Method[] methods = test.getClass().getMethods();
 
         TestClass testClass = (TestClass) context.getBean("testClass");
         System.out.println(testClass.getString("a"));

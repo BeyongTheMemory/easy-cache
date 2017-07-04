@@ -3,8 +3,9 @@ package com.pop.easycache.cache.local.guava;
 import com.google.common.cache.Cache;
 import com.google.common.eventbus.Subscribe;
 import com.pop.easycache.cache.local.LocalCache;
-import com.pop.event.CacheModifyMessage;
-import com.pop.event.EventBusHolder;
+
+import com.pop.easycache.event.CacheModifyMessage;
+import com.pop.easycache.event.EventBusHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

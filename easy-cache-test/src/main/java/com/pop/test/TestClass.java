@@ -1,6 +1,6 @@
 package com.pop.test;
 
-import com.pop.annotion.NeedCache;
+import com.pop.easycache.annotion.NeedCache;
 import org.springframework.stereotype.Component;
 
 /**

@@ -8,10 +8,10 @@ import net.sf.cglib.proxy.Enhancer;
 /**
  * Created by xugang on 17/6/21.
  */
-public class CglibProxy implements Proxy{
+public class CacheCglibProxy implements Proxy{
     private CacheInterceptor interceptor;
 
-    public CglibProxy(Cache cache,Serialize serialize){
+    public CacheCglibProxy(Cache cache, Serialize serialize){
         interceptor = new CacheInterceptor(cache, serialize);
     }
 

@@ -1,4 +1,4 @@
-package com.pop.event;
+package com.pop.easycache.event;
 
 import com.google.common.eventbus.EventBus;
 

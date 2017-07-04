@@ -1,22 +1,20 @@
-package com.pop.remote.redis;
+package com.pop.easycache.cache.remote.redis;
 
-import com.pop.remote.RemoteCache;
+import com.pop.easycache.cache.remote.RemoteCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
-import javax.annotation.Resource;
-
 
 /**
  */
-public class RedisOperateImp implements RemoteCache {
+public class RedisRemoteCacheImpl implements RemoteCache {
 
-    private static final Logger logger = LoggerFactory.getLogger(RedisOperateImp.class);
+    private static final Logger logger = LoggerFactory.getLogger(RedisRemoteCacheImpl.class);
 
     private RedisPool redispool;
 
-    public RedisOperateImp(RedisPool redispool) {
+    public RedisRemoteCacheImpl(RedisPool redispool) {
         this.redispool = redispool;
     }
 

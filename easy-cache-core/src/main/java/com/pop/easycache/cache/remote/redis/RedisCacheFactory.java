@@ -3,6 +3,7 @@ package com.pop.easycache.cache.remote.redis;
 import com.pop.easycache.cache.remote.RemoteCache;
 import com.pop.easycache.cache.remote.RemoteCacheFactory;
 import com.pop.easycache.entity.ValidBean;
+import com.pop.easycache.proxy.RedisProxy;
 import org.springframework.util.StringUtils;
 import redis.clients.jedis.JedisPool;
 
@@ -33,7 +34,10 @@ public class RedisCacheFactory extends RemoteCacheFactory {
             JedisPool jedisPool = new JedisPool(config.getRedisUrl(),config.getRedisPort());
             redisPool = new RedisPool(jedisPool);
         }
-        RemoteCache redisRemoteCacheImp = new RedisRemoteCacheImp(redisPool);
-        return redisRemoteCacheImp;
+        RedisProxy proxy = new RedisProxy(config.getErrorNum(),redisPool);
+        RemoteCache remoteCache = (RemoteCache)proxy.getProxy(RedisRemoteCacheImpl.class);
+        //注册守护线程
+        RedisDaemon redisDaemon = new RedisDaemon(redisPool,config.getRedisRetryTime());
+        return remoteCache;
     }
 }
