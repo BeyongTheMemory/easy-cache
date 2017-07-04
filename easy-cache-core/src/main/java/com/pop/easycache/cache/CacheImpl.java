@@ -47,12 +47,11 @@ public class CacheImpl implements Cache{
     }
 
     public <T> T getStringByKey(String key, Class<T> clazz) {
-        Object localResult = null;
         if(localCache != null) {
-             localResult = localCache.getStringByKey(key);
-        }
-        if (localResult != null) {
-            return (T) localResult;
+            Object localResult = localCache.getStringByKey(key);
+            if (localResult != null) {
+                return (T) localResult;
+            }
         }
         if (remoteCache != null) {
             String remoteResult = remoteCache.getStringByKey(key);

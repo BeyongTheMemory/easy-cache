@@ -1,5 +1,6 @@
 package com.pop.test;
 
+import com.pop.easycache.annotion.CacheFlush;
 import com.pop.easycache.annotion.NeedCache;
 import org.springframework.stereotype.Component;
 
@@ -12,5 +13,10 @@ public class TestClass implements TestInterface{
     public String getString(String a){
         System.out.println("getString run");
         return "xx";
+    }
+
+
+    @CacheFlush(name = "testClass.getString",key ="#a" )
+    public void flushCache(String a){
     }
 }

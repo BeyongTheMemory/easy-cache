@@ -31,6 +31,7 @@
     <bean class="com.pop.easycache.CacheBuilder">
         <property name="useLocalCache" value="true"/>
         <property name="useRemoteCache" value="true"/>
+        <property name="useRegistry" value="true"/>
         <property name="jedisPool" ref="jedisPool"/>
         <property name="registryServer" value="127.0.0.1"/>
     </bean>

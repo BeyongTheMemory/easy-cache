@@ -16,5 +16,7 @@ public class Main {
         TestClass testClass = (TestClass) context.getBean("testClass");
         System.out.println(testClass.getString("a"));
         System.out.println(testClass.getString("a"));
+        testClass.flushCache("a");
+    //    System.out.println(testClass.getString("a"));
     }
 }
