@@ -13,6 +13,7 @@ import java.io.IOException;
 
 /**
  * Created by xugang on 17/2/20.
+ * todo:zookeeper 性能有限 改为对单一节点监听的生产中-消费者模式
  */
 public class ZKRegistry implements Registry {
     private static final Logger logger = LoggerFactory.getLogger(ZKRegistry.class);

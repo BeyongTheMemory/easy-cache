@@ -32,7 +32,8 @@
         <property name="useLocalCache" value="true"/>
         <property name="useRemoteCache" value="true"/>
         <property name="useRegistry" value="true"/>
-        <property name="jedisPool" ref="jedisPool"/>
+        <property name="redisUrl" value="127.0.0.1"/>
+        <property name="redisPort" value="6379"/>
         <property name="registryServer" value="127.0.0.1"/>
     </bean>
 
